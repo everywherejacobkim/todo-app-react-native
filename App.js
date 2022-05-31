@@ -24,17 +24,14 @@ export default function App() {
       <View style={styles.header}>
 
         <TouchableOpacity onPress={work}>
-          <Text style={styles.btnTxt}>Work</Text>
+          <Text style={{...styles.btnTxt, color: working ? theme.white : theme.grey}}>Work</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={travel}>
-        <Text style={styles.btnTxt}>Travel</Text>
+        <Text style={{...styles.btnTxt, color: working ? theme.grey : theme.white}}>Travel</Text>
         </TouchableOpacity>
 
       </View>
-    
-    
-    
     
     </View>
   );
@@ -52,7 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   btnTxt: {
-    color: "white",
     fontSize: 45,
     fontWeight: "600",
   }
