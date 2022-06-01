@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import react from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { theme } from './Colors';
 
 export default function App() {
@@ -28,11 +27,14 @@ export default function App() {
     if(inputText === "") {
       return;
     } 
-  const newTodos = Object.assign({},toDos, {
+    const newToDos = {
+      ...toDos, 
       [Date.now()] : {inputText, work: working},
-    });
-    setInputText("")
+    };
+    setToDos(newToDos);
+    setInputText("");
   };
+  console.log(toDos);
 
 
 
@@ -61,7 +63,13 @@ export default function App() {
           {inputText}
         </TextInput>
 
-
+        <ScrollView style={styles.scrollViewStyle}>
+          {Object.keys(toDos).map((key) => (
+            <View key={key} style={styles.toDoList}>
+              <Text style={styles.toDoText}>{toDos[key].inputText}</Text>
+            </View>
+          ))}
+        </ScrollView>
 
       </View>
     
@@ -91,5 +99,20 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 15,
     fontSize: 16,
+  },
+  scrollViewStyle: {
+    marginTop: 10,
+  },
+  toDoList: {
+    backgroundColor: theme.workBg,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  toDoText: {
+    color: theme.black,
+    fontSize: 16,
+    fontWeight: "500",
   }
 });
