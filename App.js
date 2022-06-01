@@ -8,6 +8,7 @@ export default function App() {
 
   const [working, setWorking] = useState(true);
   const [inputText, setInputText] = useState("");
+  const [toDos, setToDos] = useState({});
 
   const travel = () => {
     setWorking(false)
@@ -26,10 +27,13 @@ export default function App() {
   const addTodo = () => {
     if(inputText === "") {
       return;
-    } else {
-      setInputText("");
-    }
-  }
+    } 
+  const newTodos = Object.assign({},toDos, {
+      [Date.now()] : {inputText, work: working},
+    });
+    setInputText("")
+  };
+
 
 
   return (
