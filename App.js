@@ -1,7 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { theme } from './Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const STORAGE_KEY = "@toDos";
 
 export default function App() {
 
@@ -23,18 +26,42 @@ export default function App() {
     console.log(inputText)
   }
 
-  const addTodo = () => {
+  const addTodo = async () => {
     if(inputText === "") {
       return;
     } 
     const newToDos = {
       ...toDos, 
-      [Date.now()] : {inputText, work: working},
+      [Date.now()] : {inputText, working},
     };
     setToDos(newToDos);
+    await saveToDos(newToDos);
     setInputText("");
   };
-  console.log(toDos);
+
+  const saveToDos = async (valueToSave) => {
+    try {
+    const jsonValue = JSON.stringify(valueToSave);
+    await AsyncStorage.setItem(STORAGE_KEY, jsonValue);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const loadToDos = async () => {
+    try {
+    const loadingData = await AsyncStorage.getItem(STORAGE_KEY)
+    setToDos(JSON.parse(loadingData));
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+  useEffect(() => {
+    loadToDos();
+  }, []);
+
+
 
 
 
@@ -64,11 +91,13 @@ export default function App() {
         </TextInput>
 
         <ScrollView style={styles.scrollViewStyle}>
-          {Object.keys(toDos).map((key) => (
-            <View key={key} style={styles.toDoList}>
-              <Text style={styles.toDoText}>{toDos[key].inputText}</Text>
+          {Object.keys(toDos).map((key) => 
+            toDos[key].working === working ? (
+            <View key={key} style={working ? styles.toDoList1 : styles.toDoList2}>
+              <Text style={working ? styles.toDoText1 : styles.toDoText2}>{toDos[key].inputText}</Text>
             </View>
-          ))}
+            ) : null
+          )}
         </ScrollView>
 
       </View>
@@ -103,16 +132,28 @@ const styles = StyleSheet.create({
   scrollViewStyle: {
     marginTop: 10,
   },
-  toDoList: {
+  toDoList1: {
     backgroundColor: theme.workBg,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginTop: 10,
     borderRadius: 10,
   },
-  toDoText: {
+  toDoList2: {
+    backgroundColor: theme.travelBg,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  toDoText1: {
     color: theme.black,
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
+  }, 
+  toDoText2: {
+    color: theme.white,
+    fontSize: 16,
+    fontWeight: "600",
   }
 });
