@@ -80,7 +80,7 @@ export default function App() {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={travel}>
-        <Text style={{...styles.btnTxt, color: working ? theme.grey : theme.white}}>Shop</Text>
+        <Text style={{...styles.btnTxt, color: working ? theme.grey : theme.white}}>Travel</Text>
         </TouchableOpacity>
       </View>
 
