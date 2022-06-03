@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { theme } from './Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 const STORAGE_KEY = "@toDos";
 
@@ -14,16 +15,13 @@ export default function App() {
 
   const travel = () => {
     setWorking(false)
-    console.log(working);
   }
   const work = () => {
     setWorking(true)
-    console.log(working);
   }
 
   const onChangeText = (text) => {
     setInputText(text);
-    console.log(inputText)
   }
 
   const addTodo = async () => {
@@ -57,6 +55,13 @@ export default function App() {
   }
 }
 
+  const deleteToDo = async (key) => {
+    const newToDos = {...toDos}
+    delete newToDos[key]
+    setToDos(newToDos);
+    await saveToDos(newToDos);
+  }
+
   useEffect(() => {
     loadToDos();
   }, []);
@@ -75,7 +80,7 @@ export default function App() {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={travel}>
-        <Text style={{...styles.btnTxt, color: working ? theme.grey : theme.white}}>Travel</Text>
+        <Text style={{...styles.btnTxt, color: working ? theme.grey : theme.white}}>Shop</Text>
         </TouchableOpacity>
       </View>
 
@@ -95,6 +100,9 @@ export default function App() {
             toDos[key].working === working ? (
             <View key={key} style={working ? styles.toDoList1 : styles.toDoList2}>
               <Text style={working ? styles.toDoText1 : styles.toDoText2}>{toDos[key].inputText}</Text>
+              <TouchableOpacity onPress={()=>deleteToDo(key)}>
+                <Ionicons name="remove-circle" size={24} color="#fb8500" />
+              </TouchableOpacity>
             </View>
             ) : null
           )}
@@ -138,6 +146,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
     borderRadius: 10,
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: "space-between",
   },
   toDoList2: {
     backgroundColor: theme.travelBg,
@@ -145,6 +156,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
     borderRadius: 10,
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: "space-between",
   },
   toDoText1: {
     color: theme.black,
